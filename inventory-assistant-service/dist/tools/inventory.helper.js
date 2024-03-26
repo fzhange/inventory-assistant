@@ -7,11 +7,11 @@ function cookInventoryData(rawInventoryData) {
     const result = [];
     const tableHeadInfos = rawInventoryData[0].map((ele) => ele.trim());
     const productNoIdx = tableHeadInfos.indexOf('商品');
-    const remainingQuantityIdx = tableHeadInfos.indexOf('库存数量');
+    const remainingQuantityIdx = tableHeadInfos.indexOf('可用量');
     const productNameIdx = tableHeadInfos.indexOf('品名');
     rawInventoryData.forEach((element, idx) => {
         const productNo = element[productNoIdx];
-        const remainingQuantity = element[remainingQuantityIdx];
+        const remainingQuantity = parseInt(element[remainingQuantityIdx]);
         const productName = element[productNameIdx];
         const storeName = '可用库存';
         const mapIdx = productNoIdxMap[productNo];
@@ -27,7 +27,7 @@ function cookInventoryData(rawInventoryData) {
                 });
             }
             else {
-                const { storeName, productNo, remainingQuantity, productName } = result[mapIdx];
+                const { storeName, productNo, productName } = result[mapIdx];
                 result[mapIdx] = {
                     storeName,
                     productNo,

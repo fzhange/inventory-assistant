@@ -7,7 +7,6 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    console.log('coming');
     return this.appService.getHello();
   }
 
@@ -16,5 +15,3 @@ export class AppController {
     return this.appService.getMatchInfo();
   }
 }
-
-// 185.151.146.252

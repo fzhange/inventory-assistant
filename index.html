@@ -19,6 +19,8 @@
       </el-tag>
 
       <el-table :data="ele.value" style="width: 100%">
+        <el-table-column prop="orderTime" label="下单日期">
+        </el-table-column>
         <el-table-column prop="barCode" label="条码">
         </el-table-column>
         <el-table-column prop="info" label="描述">
@@ -43,11 +45,11 @@
     el: '#app',
     mounted() {
       const loading = this.$loading({
-          lock: true,
-          text: 'Loading',
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)'
-        });
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
       axios({
         method: 'get',
         url: 'http://localhost:3001/getMatchInfo',
@@ -66,17 +68,17 @@
     },
     data: function () {
       return {
-        rawDataList:[],
+        rawDataList: [],
         dataList: []
       }
     },
-    methods:{
-      reset(){
+    methods: {
+      reset() {
         this.dataList = this.rawDataList;
       },
-      doFilter(){
-        this.dataList  =  this.rawDataList.filter(({key,value})=>{
-          return value.every((ele)=>{
+      doFilter() {
+        this.dataList = this.rawDataList.filter(({ key, value }) => {
+          return value.every((ele) => {
             return ele.state === "success"
           })
         })

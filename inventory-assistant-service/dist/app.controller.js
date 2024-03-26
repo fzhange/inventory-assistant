@@ -17,7 +17,6 @@ let AppController = class AppController {
         this.appService = appService;
     }
     getHello() {
-        console.log('coming');
         return this.appService.getHello();
     }
     getMatchInfo() {

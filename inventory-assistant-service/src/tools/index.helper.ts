@@ -11,6 +11,7 @@ export function readExcelFile(filePath) {
   // 将工作表转换为JSON对象数组
   const data = utils.sheet_to_json(worksheet, {
     header: 1 /* 表头在第一行 */,
+    raw: false,
   });
 
   // 输出数据
@@ -22,7 +23,8 @@ export function matchOrderAndInventory(cookedOrderData, cookedInventoryData) {
   cookedOrderData.forEach((orderEle) => {
     // same order. different product
     orderEle.forEach((element) => {
-      const { orderNo, customerName, couldStoreNum, barCode } = element;
+      const { orderNo, customerName, couldStoreNum, barCode, orderTime } =
+        element;
       const productInfo = cookedInventoryData[barCode];
 
       if (!matchResult[orderNo]) matchResult[orderNo] = [];
@@ -30,6 +32,7 @@ export function matchOrderAndInventory(cookedOrderData, cookedInventoryData) {
       if (!productInfo) {
         matchResult[orderNo].push({
           barCode,
+          orderTime,
           customerName,
           info: `商品不存在,下单数量：${couldStoreNum}`,
           state: 'danger',
@@ -37,6 +40,7 @@ export function matchOrderAndInventory(cookedOrderData, cookedInventoryData) {
       } else if (productInfo.remainingQuantity - couldStoreNum >= 0) {
         matchResult[orderNo].push({
           barCode,
+          orderTime,
           customerName,
           info: `商品数量充足,下单数量：${couldStoreNum} 库存数量: ${productInfo.remainingQuantity}`,
           state: 'success',
@@ -44,6 +48,7 @@ export function matchOrderAndInventory(cookedOrderData, cookedInventoryData) {
       } else if (productInfo.remainingQuantity - couldStoreNum < 0) {
         matchResult[orderNo].push({
           barCode,
+          orderTime,
           customerName,
           info: `商品数量不够差${Math.abs(couldStoreNum - productInfo.remainingQuantity)}个,下单数量：${couldStoreNum} 库存数量: ${productInfo.remainingQuantity}`,
           state: 'danger',

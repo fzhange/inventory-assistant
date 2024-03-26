@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cookOrderData = void 0;
+const moment = require("moment");
 function cookOrderData(rawOrderData) {
     const orderNoIdxMap = {};
     let count = 0;
@@ -10,11 +11,13 @@ function cookOrderData(rawOrderData) {
     const customerNameIdx = tableHeadInfos.indexOf('会员卡号.顾客姓名');
     const couldStoreNumIdx = tableHeadInfos.indexOf('云仓数量');
     const barCodeIdx = tableHeadInfos.indexOf('条码');
+    const orderTimeIdx = tableHeadInfos.indexOf('单据日期');
     rawOrderData.forEach((element, idx) => {
         const orderNo = element[orderNoIdx];
         const customerName = element[customerNameIdx];
         const couldStoreNum = element[couldStoreNumIdx];
         const barCode = element[barCodeIdx];
+        const orderTime = element[orderTimeIdx];
         const mapIdx = orderNoIdxMap[orderNo];
         if (idx !== 0) {
             if (mapIdx !== 0 && !mapIdx) {
@@ -26,6 +29,8 @@ function cookOrderData(rawOrderData) {
                         customerName,
                         couldStoreNum,
                         barCode,
+                        orderTimeMomentType: moment(orderTime, 'YYYY-MM-DD'),
+                        orderTime,
                     },
                 ]);
             }
@@ -35,9 +40,22 @@ function cookOrderData(rawOrderData) {
                     customerName,
                     couldStoreNum,
                     barCode,
+                    orderTimeMomentType: moment(orderTime, 'YYYY-MM-DD'),
+                    orderTime,
                 });
             }
         }
+    });
+    result.sort((a, b) => {
+        if (!a?.orderTimeMomentType)
+            return -1;
+        if (!b?.b.orderTimeMomentType)
+            return 1;
+        return a.orderTimeMomentType.isBefore(b.orderTimeMomentType)
+            ? -1
+            : a.isAfter(b)
+                ? 1
+                : 0;
     });
     return result;
 }
