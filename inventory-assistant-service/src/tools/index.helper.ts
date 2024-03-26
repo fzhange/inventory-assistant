@@ -31,19 +31,22 @@ export function matchOrderAndInventory(cookedOrderData, cookedInventoryData) {
         matchResult[orderNo].push({
           barCode,
           customerName,
-          info: '商品不存在',
+          info: `商品不存在,下单数量：${couldStoreNum}`,
+          state: 'danger',
         });
       } else if (productInfo.remainingQuantity - couldStoreNum >= 0) {
         matchResult[orderNo].push({
           barCode,
           customerName,
-          info: `商品数量充足,库存数量: ${productInfo.remainingQuantity} 下单数量：${couldStoreNum}`,
+          info: `商品数量充足,下单数量：${couldStoreNum} 库存数量: ${productInfo.remainingQuantity}`,
+          state: 'success',
         });
       } else if (productInfo.remainingQuantity - couldStoreNum < 0) {
         matchResult[orderNo].push({
           barCode,
           customerName,
-          info: `商品数量不够差${Math.abs(couldStoreNum - productInfo.remainingQuantity)}个,库存数量: ${productInfo.remainingQuantity} 下单数量：${couldStoreNum}`,
+          info: `商品数量不够差${Math.abs(couldStoreNum - productInfo.remainingQuantity)}个,下单数量：${couldStoreNum} 库存数量: ${productInfo.remainingQuantity}`,
+          state: 'danger',
         });
       }
     });

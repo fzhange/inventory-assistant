@@ -9,47 +9,77 @@
 
 <body>
   <div id="app">
-    <el-button @click="visible = true">Button</el-button>
-    <el-dialog :visible.sync="visible" title="Hello world">
-      <p>Try Element</p>
-    </el-dialog>
-    <el-table :data="tableData" style="width: 100%">
-      <el-table-column prop="date" label="日期" width="180">
-      </el-table-column>
-      <el-table-column prop="name" label="姓名" width="180">
-      </el-table-column>
-      <el-table-column prop="address" label="地址">
-      </el-table-column>
-    </el-table>
+    <el-button type="primary" @click="doFilter">一键筛选</el-button>
+    <el-button type="primary" @click="reset">一键还原</el-button>
+
+    <div v-for="(ele,idx) in dataList">
+
+      <el-tag :type="ele.value.every((ele)=>ele.state == 'success') ? 'success' :'danger'">
+        <h1>{{idx+1}} 订单号：{{ele.key}} 商品条数：{{ele.value.length}} </h1>
+      </el-tag>
+
+      <el-table :data="ele.value" style="width: 100%">
+        <el-table-column prop="barCode" label="条码">
+        </el-table-column>
+        <el-table-column prop="info" label="描述">
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.state">{{scope.row.state}} - {{ scope.row.info}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="customerName" label="用户姓名">
+        </el-table-column>
+      </el-table>
+    </div>
+
   </div>
 </body>
 <!-- import Vue before Element -->
 <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <!-- import JavaScript -->
 <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 <script>
   new Vue({
     el: '#app',
+    mounted() {
+      const loading = this.$loading({
+          lock: true,
+          text: 'Loading',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+      axios({
+        method: 'get',
+        url: 'http://localhost:3001/getMatchInfo',
+      }).then((res) => {
+        const { data } = res
+        let list = []
+        Object.entries(data).forEach(([key, value]) => {
+          list.push({
+            key, value
+          })
+        })
+        this.rawDataList = list;
+        this.dataList = list;
+        loading.close();
+      });
+    },
     data: function () {
       return {
-        visible: false
-        , tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }]
+        rawDataList:[],
+        dataList: []
+      }
+    },
+    methods:{
+      reset(){
+        this.dataList = this.rawDataList;
+      },
+      doFilter(){
+        this.dataList  =  this.rawDataList.filter(({key,value})=>{
+          return value.every((ele)=>{
+            return ele.state === "success"
+          })
+        })
       }
     }
   })

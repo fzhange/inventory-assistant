@@ -14,8 +14,6 @@ export class AppService {
     return 'Hello World!';
   }
   getMatchInfo() {
-    console.log('__dirname: ', __dirname);
-
     const rootPath =
       '/Users/apple/fzhange/inventory-assistant/inventory-assistant-service';
 
