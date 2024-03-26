@@ -14,14 +14,13 @@ export class AppService {
     return 'Hello World!';
   }
   getMatchInfo() {
-    const rootPath =
-      '/Users/apple/fzhange/inventory-assistant/inventory-assistant-service';
-
     const rawInventoryData = readExcelFile(
-      join(rootPath, 'src/assets/inventory.xlsx'),
+      join(__dirname, '../src/assets/inventory.xlsx'),
     );
 
-    const rawOrderData = readExcelFile(join(rootPath, 'src/assets/order.xlsx'));
+    const rawOrderData = readExcelFile(
+      join(__dirname, '../src/assets/order.xlsx'),
+    );
 
     const cookedOrderData = cookOrderData(rawOrderData);
     const cookedInventoryData = cookInventoryData(rawInventoryData);

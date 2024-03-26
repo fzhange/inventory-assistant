@@ -15,9 +15,8 @@ let AppService = class AppService {
         return 'Hello World!';
     }
     getMatchInfo() {
-        const rootPath = '/Users/apple/fzhange/inventory-assistant/inventory-assistant-service';
-        const rawInventoryData = (0, index_helper_1.readExcelFile)((0, path_1.join)(rootPath, 'src/assets/inventory.xlsx'));
-        const rawOrderData = (0, index_helper_1.readExcelFile)((0, path_1.join)(rootPath, 'src/assets/order.xlsx'));
+        const rawInventoryData = (0, index_helper_1.readExcelFile)((0, path_1.join)(__dirname, '../src/assets/inventory.xlsx'));
+        const rawOrderData = (0, index_helper_1.readExcelFile)((0, path_1.join)(__dirname, '../src/assets/order.xlsx'));
         const cookedOrderData = (0, index_helper_1.cookOrderData)(rawOrderData);
         const cookedInventoryData = (0, index_helper_1.cookInventoryData)(rawInventoryData);
         return (0, index_helper_1.matchOrderAndInventory)(cookedOrderData, cookedInventoryData);
