@@ -2,12 +2,11 @@ package main
 
 import (
 	"fmt"
+	"inventory-assistant/model"
 	"inventory-assistant/routes"
-	"time"
+	"inventory-assistant/tools"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 )
 
 func main() {
@@ -27,22 +26,9 @@ func main() {
 }
 
 func test() {
-	// 参考 https://github.com/go-sql-driver/mysql#dsn-data-source-name 获取详情
-	dsn := "root:Pa123457@tcp(localhost:3306)/hello-mysql?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	sqlDB, err := db.DB()
-	// SetMaxIdleConns sets the maximum number of connections in the idle connection pool.
-	sqlDB.SetMaxIdleConns(10)
+	db, _ := tools.SetupDB()
 
-	// SetMaxOpenConns sets the maximum number of open connections to the database.
-	sqlDB.SetMaxOpenConns(100)
-
-	// SetConnMaxLifetime sets the maximum amount of time a connection may be reused.
-	sqlDB.SetConnMaxLifetime(time.Hour)
-
-	if err != nil {
-		fmt.Println("", err)
-	} else {
-		fmt.Println("", db)
-	}
+	var users []model.User
+	db.Model(&model.User{}).Preload("Post").Find(&users)
+	fmt.Println("", users)
 }
